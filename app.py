@@ -18,6 +18,42 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+st.markdown("""
+    <style>
+        .main-title {
+            font-size: 38px !important;
+            font-weight: 700 !important;
+            color: #1E3A8A;
+            margin-bottom: 5px;
+        }
+        .sub-title {
+            font-size: 16px !important;
+            color: #4B5563;
+            margin-bottom: 25px;
+        }
+        [data-testid="stMetricValue"] {
+            font-size: 28px !important;
+            font-weight: 600 !important;
+            color: #2563EB !important;
+        }
+        div[data-testid="metric-container"] {
+            background-color: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            padding: 15px 20px !important;
+            border-radius: 12px !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        [data-testid="stSidebar"] {
+            background-color: #1E293B !important;
+        }
+        [data-testid="stSidebar"] .stMarkdown h1, 
+        [data-testid="stSidebar"] .stMarkdown h3,
+        [data-testid="stSidebar"] label {
+            color: #F8FAFC !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 @st.cache_data
 def load_data():
     df = pd.read_csv("Churn_Modelling.csv")
@@ -63,7 +99,7 @@ for name, model in trained_models.items():
         y_pred = model.predict(X_test)
     accuracies[name] = accuracy_score(y_test, y_pred)
 
-st.sidebar.markdown("# ⚙️ BẢNG ĐIỀU KHIỂN SYSTEM")
+st.sidebar.markdown("# ⚙️ BẢNG ĐIỀU KHIỂN")
 st.sidebar.markdown("---")
 
 st.sidebar.subheader("1. Lựa chọn Thuật toán Dự báo")
@@ -73,7 +109,7 @@ selected_algorithm = st.sidebar.selectbox(
 )
 
 st.sidebar.markdown("---")
-st.sidebar.subheader("2. Giả lập thông tin Khách hàng Mới")
+st.sidebar.subheader("2. Thông tin Khách hàng")
 
 input_credit = st.sidebar.slider("Điểm tín dụng (Credit Score)", 300, 850, 650)
 input_geo = st.sidebar.selectbox("Quốc gia (Geography)", ["France", "Germany", "Spain"])
@@ -86,9 +122,11 @@ input_card = st.sidebar.selectbox("Có thẻ tín dụng hay không?", ["Có", "
 input_active = st.sidebar.selectbox("Thành viên hoạt động tích cực?", ["Có", "Không"])
 input_salary = st.sidebar.number_input("Thu nhập ước tính/Năm (EUR)", min_value=0.0, value=100000.0, step=5000.0)
 
-st.title("💼 Dashboard Phân Tích & Dự Báo Khách Hàng Rời Bỏ Ngân Hàng")
-st.markdown("Môi trường phân tích rủi ro tài chính ứng dụng học máy có giám sát nâng cao.")
-st.markdown("---")
+st.sidebar.markdown("---")
+predict_button = st.sidebar.button("🚀 KÍCH HOẠT DỰ BÁO HỆ THỐNG", use_container_width=True)
+
+st.markdown('<div class="main-title">💼 Dashboard Phân Tích & Dự Báo Khách Hàng Rời Bỏ Ngân Hàng</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">Môi trường phân tích rủi ro tài chính chuyên sâu ứng dụng mô hình học máy có giám sát.</div>', unsafe_allow_html=True)
 
 tab1, tab2, tab3 = st.tabs([
     "📥 Công Cụ Dự Báo & Đối Soánh Mô Hình", 
@@ -97,64 +135,60 @@ tab1, tab2, tab3 = st.tabs([
 ])
 
 with tab1:
-    st.subheader("🤖 Kết Quả Phân Tích Điểm Tin Cậy & Dự Báo")
+    st.subheader("🤖 Kết Quả Kiểm Định Trạng Thái Khách Hàng")
     
-    input_data = pd.DataFrame(0, index=[0], columns=all_features)
-    input_data.at[0, 'CreditScore'] = input_credit
-    input_data.at[0, 'Age'] = input_age
-    input_data.at[0, 'Tenure'] = input_tenure
-    input_data.at[0, 'Balance'] = input_balance
-    input_data.at[0, 'NumOfProducts'] = input_products
-    input_data.at[0, 'HasCrCard'] = 1 if input_card == "Có" else 0
-    input_data.at[0, 'IsActiveMember'] = 1 if input_active == "Có" else 0
-    input_data.at[0, 'EstimatedSalary'] = input_salary
-    
-    if input_geo == "Germany":
-        input_data.at[0, 'Geography_Germany'] = 1
-    elif input_geo == "Spain":
-        input_data.at[0, 'Geography_Spain'] = 1
+    if predict_button:
+        input_data = pd.DataFrame(0, index=[0], columns=all_features)
+        input_data.at[0, 'CreditScore'] = input_credit
+        input_data.at[0, 'Age'] = input_age
+        input_data.at[0, 'Tenure'] = input_tenure
+        input_data.at[0, 'Balance'] = input_balance
+        input_data.at[0, 'NumOfProducts'] = input_products
+        input_data.at[0, 'HasCrCard'] = 1 if input_card == "Có" else 0
+        input_data.at[0, 'IsActiveMember'] = 1 if input_active == "Có" else 0
+        input_data.at[0, 'EstimatedSalary'] = input_salary
         
-    if input_gender == "Male":
-        input_data.at[0, 'Gender_Male'] = 1
+        if input_geo == "Germany":
+            input_data.at[0, 'Geography_Germany'] = 1
+        elif input_geo == "Spain":
+            input_data.at[0, 'Geography_Spain'] = 1
+            
+        if input_gender == "Male":
+            input_data.at[0, 'Gender_Male'] = 1
 
-    current_model = trained_models[selected_algorithm]
-    if selected_algorithm in ["K-Nearest Neighbors (KNN)", "Logistic Regression"]:
-        input_scaled = scaler.transform(input_data)
-        prediction = current_model.predict(input_scaled)[0]
-        try:
-            prob = current_model.predict_proba(input_scaled)[0][1] * 100
-        except:
-            prob = None
-    else:
-        prediction = current_model.predict(input_data)[0]
-        try:
-            prob = current_model.predict_proba(input_data)[0][1] * 100
-        except:
-            prob = None
-
-    res_col1, res_col2, res_col3 = st.columns(3)
-    
-    with res_col1:
-        st.metric(
-            label="Thuật toán đang chọn", 
-            value=selected_algorithm.split(" (")[0]
-        )
-    with res_col2:
-        st.metric(
-            label="Độ chính xác của Mô hình (Accuracy)", 
-            value=f"{accuracies[selected_algorithm]*100:.2f}%"
-        )
-    with res_col3:
-        if prob is not None:
-            st.metric(label="Xác suất rủi ro rời bỏ", value=f"{prob:.1f}%")
+        current_model = trained_models[selected_algorithm]
+        if selected_algorithm in ["K-Nearest Neighbors (KNN)", "Logistic Regression"]:
+            input_scaled = scaler.transform(input_data)
+            prediction = current_model.predict(input_scaled)[0]
+            try:
+                prob = current_model.predict_proba(input_scaled)[0][1] * 100
+            except:
+                prob = None
         else:
-            st.metric(label="Trạng thái phân tích", value="Xác định lớp")
+            prediction = current_model.predict(input_data)[0]
+            try:
+                prob = current_model.predict_proba(input_data)[0][1] * 100
+            except:
+                prob = None
 
-    st.markdown("#### **Kết luận kiểm định khách hàng:**")
-    if prediction == 1:
-        st.error(f"⚠️ **CẢNH BÁO:** Khách hàng này được thuật toán mô phỏng có nguy cơ cao sẽ **RỜI BỎ** ngân hàng. Hệ thống khuyến nghị bộ phận CSKH kích hoạt gói ưu đãi giữ chân.")
+        res_col1, res_col2, res_col3 = st.columns(3)
+        with res_col1:
+            st.metric(label="Mô hình đang chạy", value=selected_algorithm.split(" (")[0])
+        with res_col2:
+            st.metric(label="Độ chính xác mẫu thử (Accuracy)", value=f"{accuracies[selected_algorithm]*100:.2f}%")
+        with res_col3:
+            if prob is not None:
+                st.metric(label="Xác suất rủi ro Churn", value=f"{prob:.1f}%")
+            else:
+                st.metric(label="Trạng thái phân tích", value="Xác định lớp")
+
+        st.markdown("#### **Kết luận từ mô hình hệ thống:**")
+        if prediction == 1:
+            st.error(f"⚠️ **CẢNH BÁO RỦI RO:** Khách hàng này có nguy cơ cao sẽ **RỜI BỎ** dịch vụ của ngân hàng trong tương lai gần. Đề xuất bộ phận vận hành triển khai chương trình CSKH đặc biệt.")
+        else:
+            st.success(f"✅ **CHỈ SỐ AN TOÀN:** Khách hàng có xu hướng tiếp tục **Ở LẠI** gắn bó lâu dài. Hồ sơ tài chính hoạt động ổn định.")
     else:
-        st.success(f"✅ **AN TOÀN:** Khách hàng có xu hướng tiếp tục **Ở LẠI** và sử dụng dịch vụ lâu dài.")
+        st.info("💡 **HƯỚNG DẪN SỬ DỤNG:** Cấu hình các thông số hồ sơ khách hàng tại bảng điều khiển bên trái, sau đó nhấn nút **'KÍCH HOẠT DỰ BÁO HỆ THỐNG'** để xem kết quả phân tích rủi ro.")
 
     st.markdown("---")
     st.subheader("📊 Bảng Đối Soánh Hiệu Năng Toàn Diện Toàn Hệ Thống")
@@ -169,18 +203,16 @@ with tab1:
         best_model = max(accuracies, key=accuracies.get)
         st.info(
             f"**Nhận xét Học thuật:**\n\n"
-            f"Mô hình đạt hiệu năng kiểm thử cao nhất trên tập dữ liệu lớn là **{best_model}** "
+            f"Mô hình đạt hiệu năng kiểm thử cao nhất trên tập dữ liệu là **{best_model}** "
             f"đạt tỷ lệ phân loại đúng **{accuracies[best_model]*100:.2f}%**. "
-            f"Các thuật toán thuộc nhóm Ensemble (Rừng ngẫu nhiên/Cây quyết định) thường xử lý dữ liệu bảng tài chính tốt hơn cấu trúc tuyến tính."
+            f"Nhóm thuật toán Ensemble (Random Forest/Decision Tree) thường xử lý dữ liệu dạng bảng rất tối ưu."
         )
 
 with tab2:
     st.header("📈 Trung Tâm Trực Quan Hóa Cấu Trúc Dữ Liệu Hệ Thống")
     numeric_cols = ['CreditScore', 'Age', 'Tenure', 'Balance', 'NumOfProducts', 'EstimatedSalary']
     
-    # --- HÀNG 1: BIỂU ĐỒ 1 & BIỂU ĐỒ 2 ---
     row1_col1, row1_col2 = st.columns(2)
-    
     with row1_col1:
         st.markdown("##### **Biểu đồ 1: Tỷ lệ phân phối Tổng thể khách hàng**")
         fig1, ax1 = plt.subplots(figsize=(6, 3.8))
@@ -206,9 +238,7 @@ with tab2:
         
     st.markdown("---")
     
-    # --- HÀNG 2: BIỂU ĐỒ 3 & BIỂU ĐỒ 4 ---
     row2_col1, row2_col2 = st.columns(2)
-    
     with row2_col1:
         st.markdown("##### **Biểu đồ 3: Biến động hành vi theo không gian địa lý**")
         fig4, ax4 = plt.subplots(figsize=(6, 3.8))
@@ -226,7 +256,6 @@ with tab2:
 
     st.markdown("---")
     
-    # --- HÀNG TẬP TRUNG: BIỂU ĐỒ 5 (Kích thước rộng) ---
     st.markdown("##### **Biểu đồ 5: Đồ thị phân tán đa chiều (Điểm tín dụng so với Số dư khả dụng)**")
     fig3, ax3 = plt.subplots(figsize=(12, 4))
     sns.scatterplot(x='CreditScore', y='Balance', hue='Exited', data=df_raw.sample(2000, random_state=42), palette='bwr', alpha=0.4, ax=ax3)
@@ -237,5 +266,5 @@ with tab2:
 
 with tab3:
     st.header("📋 Bản ghi chi tiết Hệ thống Dữ liệu Đầu vào")
-    st.write(f"Trích xuất cấu trúc cấu hình 10 dòng hồ sơ đầu tiên của tổng thể bộ dữ liệu lớn ({df_raw.shape[0]} dòng):")
+    st.write(f"Trích xuất hồ sơ 10 khách hàng đầu tiên của tổng thể bộ dữ liệu lớn ({df_raw.shape[0]} dòng):")
     st.dataframe(df_raw.head(10).style.background_gradient(cmap='YlOrRd', subset=['Balance', 'EstimatedSalary']))
