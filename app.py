@@ -178,11 +178,12 @@ with tab2:
     st.header("📈 Trung Tâm Trực Quan Hóa Cấu Trúc Dữ Liệu Hệ Thống")
     numeric_cols = ['CreditScore', 'Age', 'Tenure', 'Balance', 'NumOfProducts', 'EstimatedSalary']
     
-    fig_col1, fig_col2 = st.columns(2)
+    # --- HÀNG 1: BIỂU ĐỒ 1 & BIỂU ĐỒ 2 ---
+    row1_col1, row1_col2 = st.columns(2)
     
-    with fig_col1:
-        st.markdown("##### **Biểu đồ 1: Tỷ lệ phân phối Tổng thể khách hàng (Mất cân bằng dữ liệu)**")
-        fig1, ax1 = plt.subplots(figsize=(7, 4.5))
+    with row1_col1:
+        st.markdown("##### **Biểu đồ 1: Tỷ lệ phân phối Tổng thể khách hàng**")
+        fig1, ax1 = plt.subplots(figsize=(6, 3.8))
         df_raw['Exited'].value_counts().plot.pie(
             labels=['Ở lại (0)', 'Rời bỏ (1)'], 
             autopct='%1.1f%%', 
@@ -194,28 +195,44 @@ with tab2:
         ax1.set_ylabel('')
         st.pyplot(fig1)
         
-        st.markdown("##### **Biểu đồ 3: Biến động hành vi theo không gian địa lý**")
-        fig4, ax4 = plt.subplots(figsize=(7, 4.5))
-        sns.countplot(data=df_raw, x='Geography', hue='Exited', palette='viridis', ax=ax4)
-        ax4.set_title("Số lượng Churn theo từng Quốc gia")
-        st.pyplot(fig4)
-
-    with fig_col2:
-        st.markdown("##### **Biểu đồ 2: Đồ thị hộp phân tích biên độ Tuổi tác (Age Khách hàng)**")
-        fig2, ax2 = plt.subplots(figsize=(7, 4.5))
+    with row1_col2:
+        st.markdown("##### **Biểu đồ 2: Phân tích biên độ Tuổi tác (Age)**")
+        fig2, ax2 = plt.subplots(figsize=(6, 3.8))
         sns.boxplot(x='Exited', y='Age', data=df_raw, palette='Set2', ax=ax2)
         ax2.set_xticklabels(['Ở lại (0)', 'Rời bỏ (1)'])
+        ax2.set_xlabel('Trạng thái')
+        ax2.set_ylabel('Tuổi')
         st.pyplot(fig2)
         
-        st.markdown("##### **Biểu đồ 4: Ma trận tương quan đa biến (Phát hiện đa cộng tuyến)**")
-        fig5, ax5 = plt.subplots(figsize=(7, 4.5))
+    st.markdown("---")
+    
+    # --- HÀNG 2: BIỂU ĐỒ 3 & BIỂU ĐỒ 4 ---
+    row2_col1, row2_col2 = st.columns(2)
+    
+    with row2_col1:
+        st.markdown("##### **Biểu đồ 3: Biến động hành vi theo không gian địa lý**")
+        fig4, ax4 = plt.subplots(figsize=(6, 3.8))
+        sns.countplot(data=df_raw, x='Geography', hue='Exited', palette='viridis', ax=ax4)
+        ax4.set_xlabel('Quốc gia')
+        ax4.set_ylabel('Số lượng khách hàng')
+        ax4.legend(['Ở lại (0)', 'Rời bỏ (1)'])
+        st.pyplot(fig4)
+
+    with row2_col2:
+        st.markdown("##### **Biểu đồ 4: Ma trận tương quan đa biến (Correlation)**")
+        fig5, ax5 = plt.subplots(figsize=(6, 3.8))
         sns.heatmap(df_clean[numeric_cols + ['Exited']].corr(), annot=True, cmap='coolwarm', fmt='.2f', ax=ax5, cbar=False)
         st.pyplot(fig5)
 
     st.markdown("---")
-    st.markdown("##### **Biểu đồ 5: Biểu đồ phân tán mật độ đa chiều (Điểm tín dụng so với Số dư khả dụng)**")
+    
+    # --- HÀNG TẬP TRUNG: BIỂU ĐỒ 5 (Kích thước rộng) ---
+    st.markdown("##### **Biểu đồ 5: Đồ thị phân tán đa chiều (Điểm tín dụng so với Số dư khả dụng)**")
     fig3, ax3 = plt.subplots(figsize=(12, 4))
     sns.scatterplot(x='CreditScore', y='Balance', hue='Exited', data=df_raw.sample(2000, random_state=42), palette='bwr', alpha=0.4, ax=ax3)
+    ax3.set_xlabel('Điểm tín dụng (Credit Score)')
+    ax3.set_ylabel('Số dư tài khoản (Balance)')
+    ax3.legend(['Ở lại (0)', 'Rời bỏ (1)'])
     st.pyplot(fig3)
 
 with tab3:
