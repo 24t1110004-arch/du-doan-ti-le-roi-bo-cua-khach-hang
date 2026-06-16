@@ -69,7 +69,7 @@ st.sidebar.markdown("---")
 st.sidebar.subheader("1. Lựa chọn Thuật toán Dự báo")
 selected_algorithm = st.sidebar.selectbox(
     "Mô hình huấn luyện áp dụng:",
-    list(models.keys())
+    list(trained_models.keys())
 )
 
 st.sidebar.markdown("---")
