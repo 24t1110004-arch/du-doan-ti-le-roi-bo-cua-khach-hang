@@ -43,13 +43,34 @@ st.markdown("""
             border-radius: 12px !important;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
+        
+        /* --- ĐÃ SỬA: TỐI ƯU HIỂN THỊ NỔI BẬT CHO SIDEBAR --- */
         [data-testid="stSidebar"] {
             background-color: #1E293B !important;
         }
-        [data-testid="stSidebar"] .stMarkdown h1, 
-        [data-testid="stSidebar"] .stMarkdown h3,
-        [data-testid="stSidebar"] label {
-            color: #F8FAFC !important;
+        /* Ép toàn bộ tiêu đề lớn, tiêu đề con và nhãn chữ sang màu trắng 100% */
+        [data-testid="stSidebar"] h1, 
+        [data-testid="stSidebar"] h2, 
+        [data-testid="stSidebar"] h3, 
+        [data-testid="stSidebar"] h4,
+        [data-testid="stSidebar"] label,
+        [data-testid="stSidebar"] p,
+        [data-testid="stSidebar"] .stMarkdown {
+            color: #FFFFFF !important;
+            font-weight: 600 !important;
+        }
+        /* Làm nổi bật riêng nút bấm Kích Hoạt Dự Báo */
+        [data-testid="stSidebar"] button {
+            background-color: #2563EB !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            border: none !important;
+            padding: 10px !important;
+            border-radius: 8px !important;
+        }
+        [data-testid="stSidebar"] button:hover {
+            background-color: #1D4ED8 !important;
+            color: #FFFFFF !important;
         }
     </style>
 """, unsafe_allow_html=True)
