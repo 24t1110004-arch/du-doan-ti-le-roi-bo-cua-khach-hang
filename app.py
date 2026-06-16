@@ -20,6 +20,22 @@ st.set_page_config(
 
 st.markdown("""
     <style>
+        [data-testid="stAppViewContainer"] {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)), 
+                              url("https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1920");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        div[data-testid="stTabPanel"] {
+            background-color: rgba(255, 255, 255, 0.8) !important;
+            padding: 20px !important;
+            border-radius: 16px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
         .main-title {
             font-size: 38px !important;
             font-weight: 700 !important;
@@ -44,11 +60,9 @@ st.markdown("""
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         
-        /* --- ĐÃ SỬA: TỐI ƯU HIỂN THỊ NỔI BẬT CHO SIDEBAR --- */
         [data-testid="stSidebar"] {
             background-color: #1E293B !important;
         }
-        /* Ép toàn bộ tiêu đề lớn, tiêu đề con và nhãn chữ sang màu trắng 100% */
         [data-testid="stSidebar"] h1, 
         [data-testid="stSidebar"] h2, 
         [data-testid="stSidebar"] h3, 
@@ -59,7 +73,6 @@ st.markdown("""
             color: #FFFFFF !important;
             font-weight: 600 !important;
         }
-        /* Làm nổi bật riêng nút bấm Kích Hoạt Dự Báo */
         [data-testid="stSidebar"] button {
             background-color: #2563EB !important;
             color: #FFFFFF !important;
@@ -215,7 +228,7 @@ with tab1:
     st.subheader("📊 Bảng Đối Soánh Hiệu Năng Toàn Diện Toàn Hệ Thống")
     
     acc_df = pd.DataFrame(list(accuracies.items()), columns=['Thuật toán phân loại', 'Độ chính xác (Accuracy Score)'])
-    acc_df['Độ chính xác (Accuracy Score)'] = acc_df['Độ chính xác (Accuracy Score)'].map(lambda x: f"{x*100:.2f}%")
+    acc_df['Độ chính xác (Accuracy Score)'] = acc_df['Độ chính xác (Accuracy Score)'] .map(lambda x: f"{x*100:.2f}%")
     
     col_table, col_summary = st.columns([2, 1.2])
     with col_table:
